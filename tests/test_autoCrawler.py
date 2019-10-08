@@ -1,3 +1,5 @@
+import os
+import shutil
 from unittest import TestCase
 
 from main import AutoCrawler
@@ -59,3 +61,25 @@ class TestAutoCrawler(TestCase):
         with self.assertRaises(FileNotFoundError):
             AutoCrawler.validate_image('mocks/nothing.jpg')
 
+    def test_make_dir(self):
+        test_directory_name = 'testDir'
+
+        AutoCrawler.make_dir(test_directory_name)
+        self.assertIn(test_directory_name, os.listdir('.'), "Should create a test directory")
+
+        # cleanup
+        os.rmdir(test_directory_name)
+
+    def test_make_dir_new_path(self):
+        test_root = 'path/'
+        test_path = f'{test_root}to/testDir'
+
+        AutoCrawler.make_dir(test_path)
+        self.assertTrue(os.path.exists(test_path), "Should create a test directory at the given path")
+
+        # cleanup
+        shutil.rmtree(test_root)
+
+    def test_get_keywords(self):
+        keywords = AutoCrawler.get_keywords('mocks/keywords.txt')
+        self.assertIn('cat', keywords, "Should be a list of keywords including 'cat'")
